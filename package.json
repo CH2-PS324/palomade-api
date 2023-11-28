@@ -1,0 +1,19 @@
+{
+  "name": "palomade-api",
+  "version": "1.0.0",
+  "description": "rest api for palomade api (bangkit-capstone-product)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "author": "Hafiz Caniago, Iqbal Pamula",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "mysql2": "^3.6.5",
+    "nodemon": "^3.0.1"
+  }
+}
