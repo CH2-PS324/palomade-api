@@ -108,6 +108,7 @@ exports.create = (req, res) => {
         .then((user) => {
             res.status(201).send({
                 message: "User was registered successfully!",
+                data: req.body
             });
         })
         .catch((err) => {
