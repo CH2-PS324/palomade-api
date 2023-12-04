@@ -1,5 +1,7 @@
 const { authJwt, verifyUser } = require("../middleware");
 const controller = require("../controllers/user.controller");
+const { registerValidator, runValidaton } = require('../validation/user.validation')
+
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -13,6 +15,7 @@ module.exports = function (app) {
     // Register User
     app.post(
         "/api/users/register",
+        registerValidator, runValidaton,
         [verifyUser.checkDuplicateEmail],
         controller.create
     );
