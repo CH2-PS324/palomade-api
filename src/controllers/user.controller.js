@@ -3,9 +3,6 @@ const { user: User, refreshToken: RefreshToken } = db;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../config/auth.config');
-const { mailWelcomeTemplate } = require('../utils/mailtemplate.utils');
-const { kirimEmail } = require('../utils/mailsender.utils');
-require("dotenv").config();
 
 exports.login = (req, res) => {
     User.findOne({
@@ -38,7 +35,7 @@ exports.login = (req, res) => {
         let refreshToken = await RefreshToken.createToken(user);
 
         res.status(200).send({
-            id: user.id,
+            id: hashids.encode(user.id),
             name: user.name,
             role: user.role,
             accessToken: token,
@@ -134,16 +131,23 @@ exports.create = async (req, res) => {
 exports.getOne = (req, res) => {
     User.findOne({
         where: {
-            id: req.params.id,
+            id: hashids.decode(req.params.id),
         },
     })
         .then((user) => {
             if (!user) return res.status(404).send({ message: "User not found." });
-            else
+            else {
                 res.status(200).send({
                     message: "User was fetched successfully.",
-                    data: user,
+                    data: {
+                        id: hashids.encode(user.id),
+                        name: user.name,
+                        email: user.email,
+                        password: user.password,
+                        role: user.role,
+                    },
                 });
+            }
         })
         .catch((err) => {
             console.error(err.message);
@@ -167,7 +171,7 @@ exports.update = (req, res) => {
         {
             ...req.body,
         },
-        { where: { id: req.params.id } }
+        { where: { id: hashids.decode(req.params.id) } }
     )
         .then((user) => {
             res.status(200).send({
