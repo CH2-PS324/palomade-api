@@ -21,6 +21,7 @@ db.sequelize = sequelize;
 // define model
 db.user = require('./user.model')(sequelize, Sequelize);
 db.refreshToken = require('./refreshToken.model')(sequelize, Sequelize);
+db.configs = require('./config.model')(sequelize, Sequelize);
 
 // define relation
 db.refreshToken.belongsTo(db.user, {
