@@ -39,4 +39,7 @@ module.exports = function (app) {
         ],
         controller.update
     );
+
+    // Send Email Example API
+    // app.post("/api/users/sendmail", controller.sendWelcomeEmail);
 };

@@ -24,7 +24,7 @@ const runValidaton = (req, res, next) => {
   
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Bad Request",
+        error: "Bad Request",
         errors: errors.array().map((error) => error.msg),
       });
     }
