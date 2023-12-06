@@ -12,12 +12,12 @@ exports.mailWelcomeTemplate = (data) => {
     let response = {
         body: {
             name: data.name,
-            intro: 'Welcome to PALOMADE! We\'re very excited to have you on board.',
+            intro: 'Selamat Datang di PALOMADE! Kami sangat senang dengan kehadiranmu di aplikasi kami.',
             action: {
-                instructions: 'To get started with PALOMADE, please take a look in our guide in here:',
+                instructions: 'Untuk memulai menggunakan aplikasi kami, Kamu bisa melihat panduan pengguna di:',
                 button: {
                     color: '#22BC66', // Optional action button color
-                    text: 'Check Guide',
+                    text: 'Cek Panduan',
                     link: 'https://github.com/CH2-PS324/palomade-api'
                 }
             }
