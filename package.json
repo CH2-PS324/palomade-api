@@ -18,7 +18,9 @@
     "express-validator": "^7.0.1",
     "hashids": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
+    "mailgen": "^2.0.28",
     "mysql2": "^3.6.5",
+    "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "sequelize": "^6.35.1"
   },
