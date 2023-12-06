@@ -3,6 +3,9 @@ const { user: User, refreshToken: RefreshToken } = db;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../config/auth.config');
+const { mailWelcomeTemplate } = require('../utils/mailtemplate.utils');
+const { kirimEmail } = require('../utils/mailsender.utils');
+require("dotenv").config();
 
 exports.login = (req, res) => {
     User.findOne({
