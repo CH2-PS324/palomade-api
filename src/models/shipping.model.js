@@ -54,7 +54,8 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
         },
         estimated_arrive: {
-            type: Sequelize.DATEONLY
+            type: Sequelize.DATEONLY,
+            allowNull: true,
         },
         createdAt: {
             type: Sequelize.DATE,
