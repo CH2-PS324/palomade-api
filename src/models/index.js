@@ -22,11 +22,42 @@ db.sequelize = sequelize;
 db.user = require('./user.model')(sequelize, Sequelize);
 db.refreshToken = require('./refreshToken.model')(sequelize, Sequelize);
 db.configs = require('./config.model')(sequelize, Sequelize);
+db.shipping = require('./shipping.model')(sequelize, Sequelize);
+db.shipping_detail = require('./shipping_detail.model')(sequelize, Sequelize);
+db.subscription = require('./subscription.model')(sequelize, Sequelize);
+db.subscription_detail = require('./subscription_detail.model')(sequelize, Sequelize);
 
 // define relation
 db.refreshToken.belongsTo(db.user, {
     foreignKey: "userId",
     targetKey: "id",
+});
+db.user.hasOne(db.refreshToken, {
+    foreignKey: "userId",
+    targetKey: "id",
+});
+
+db.user.hasMany(db.shipping, {
+    foreignKey: "driver_id",
+    targetKey: "id"
+});
+db.user.hasMany(db.shipping, {
+    foreignKey: "organisasi_id",
+    targetKey: "id"
+});
+
+db.shipping.hasMany(db.shipping_detail, {
+    foreignKey: "shipping_id",
+    targetKey: "id"
+})
+
+db.user.hasMany(db.subscription_detail, {
+    foreignKey: "id_user",
+    targetKey: "id"
+})
+db.subscription.hasMany(db.subscription_detail, {
+    foreignKey: "id_subscription",
+    targetKey: "id"
 });
 
 const initializeDatabase = async () => {
