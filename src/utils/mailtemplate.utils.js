@@ -18,7 +18,7 @@ exports.mailWelcomeTemplate = (data) => {
                 button: {
                     color: '#22BC66', // Optional action button color
                     text: 'Cek Panduan',
-                    link: 'https://github.com/CH2-PS324/palomade-api'
+                    link: 'https://github.com/CH2-PS324/'
                 }
             }
         }

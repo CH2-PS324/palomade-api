@@ -14,7 +14,8 @@ const catchError = (err, res) => {
 };
 
 const verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
+    let token = req.headers["authorization"];
+    token = token && token.split(' ')[1]
 
     if (!token) {
         return res.status(403).send({

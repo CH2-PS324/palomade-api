@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         status: {
             type: Sequelize.DataTypes.ENUM('diproses', 'dikirim', 'terkirim'),
-            allowNull: false,
+            allowNull: true,
         },
         driver_id: {
             type: Sequelize.INTEGER,
@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         bobot: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         from: {
             type: Sequelize.STRING,
