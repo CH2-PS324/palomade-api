@@ -14,11 +14,10 @@ require("dotenv").config();
 exports.create = async (req, res) => {
     const fullUuid = uuidv4();
     const shortUuid = fullUuid.substring(0, 10);
-    console.log(req.body);
     Shipping.create({
         code: shortUuid,
-        started_date: req.body.started_date,
-        finish_date: req.body.finish_date,
+        started_date: req.body.started_date, // format date = year-month-day
+        finish_date: req.body.finish_date, // format date = year-month-day
         status: req.body.status,
         driver_id: req.body.driver_id,
         organisasi_id: req.body.organisasi_id,
@@ -28,7 +27,7 @@ exports.create = async (req, res) => {
         to: req.body.to,
         coordinate_from: req.body.coordinate_from,
         coordinate_to: req.body.coordinate_to,
-        estimated_arrive: req.body.estimated_arrive,
+        estimated_arrive: req.body.estimated_arrive, // format date = year-month-day
     })
         .then(async () => {
             res.status(201).send({
