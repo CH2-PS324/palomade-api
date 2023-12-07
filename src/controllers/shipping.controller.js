@@ -5,9 +5,9 @@ require("dotenv").config();
 
 exports.create = async (req, res) => {
     const fullUuid = uuidv4();
-    const shortUuid = fullUuid.substring(0, 10);
+    const shortUuid = fullUuid.substring(0, 8);
     Shipping.create({
-        code: shortUuid,
+        code: shortUuid.toUpperCase(),
         started_date: req.body.started_date, // format date = year-month-day
         finish_date: req.body.finish_date, // format date = year-month-day
         status: req.body.status,
@@ -34,3 +34,25 @@ exports.create = async (req, res) => {
             });
         });
 };
+
+exports.start = async (req, res) => {
+    Shipping.findOne({
+        where: {
+            code: req.body.code
+        },
+    }).then((shipping) => {
+        Shipping.update(
+            {
+                ...req.body
+            },
+            {
+                where: {id : 1} // ini idnya harus di fetch dari jwt si, soalnya gaada masukan dari input yekan. tapi dari req.body juga bisa aja sih sebenernya.
+            }
+        ).then((shippingData) => {
+
+        })
+        .catch((err) => {
+
+        })
+    })
+}

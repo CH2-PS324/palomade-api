@@ -12,4 +12,7 @@ module.exports = function (app) {
 
     // Create Shipping
     app.post("/api/shipping/create", [authJwt.verifyToken, authJwt.isOrganisasi], controller.create);
+
+    // Input Token Shipping (Supir)
+    app.post("/api/shipping/start", [authJwt.verifyToken, authJwt.isSupir], controller.start);
 };
