@@ -1,6 +1,6 @@
 const { authJwt, verifyUser } = require("../middleware");
 const controller = require("../controllers/user.controller");
-const { registerValidator, runValidaton } = require('../validation/user.validation')
+const { registerValidator, runValidaton } = require('../validation/user.validation');
 
 
 module.exports = function (app) {

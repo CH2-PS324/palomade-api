@@ -14,5 +14,8 @@ module.exports = function (app) {
     app.post("/api/shipping/create", [authJwt.verifyToken, authJwt.isOrganisasi], controller.create);
 
     // Input Token Shipping (Supir)
-    app.post("/api/shipping/start", [authJwt.verifyToken, authJwt.isSupir], controller.start);
+    app.patch("/api/shipping/start/:code", [authJwt.verifyToken, authJwt.isSupir], controller.start);
+
+    // Change Status Shipping (Supir)
+    app.patch("/api/shipping/finish/:code", [authJwt.verifyToken, authJwt.isSupir], controller.finish);
 };
