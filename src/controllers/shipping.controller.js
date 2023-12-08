@@ -1,5 +1,5 @@
 const { db } = require('../models');
-const { shipping: Shipping } = db;
+const { shipping: Shipping, shipping_detail: Shipping_Detail } = db;
 const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
 
@@ -99,7 +99,8 @@ exports.finish = async (req, res) => {
 
         await Shipping.update(
             {
-                status: 'terkirim'
+                status: 'terkirim',
+                finish_date: Date().toLocaleString({timeZone: "Asia/Jakarta"}),
             },
             {
                 where: {
