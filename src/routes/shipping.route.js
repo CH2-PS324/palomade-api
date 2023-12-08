@@ -10,12 +10,15 @@ module.exports = function (app) {
         next();
     });
 
-    // Create Shipping
+    // Create Shipping (Organisasi)
     app.post("/api/shipping/create", [authJwt.verifyToken, authJwt.isOrganisasi], controller.create);
 
     // Input Token Shipping (Supir)
     app.patch("/api/shipping/start/:code", [authJwt.verifyToken, authJwt.isDriver], controller.start);
 
-    // Change Status Shipping (Supir)
+    // Change Status Shipping (Organisasi)
     app.patch("/api/shipping/finish/:code", [authJwt.verifyToken, authJwt.isOrganisasi], controller.finish);
+
+    // Add Shipping Detail (Supir) 
+    app.post("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isDriver], controller.record)
 };

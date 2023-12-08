@@ -100,7 +100,7 @@ exports.finish = async (req, res) => {
         await Shipping.update(
             {
                 status: 'terkirim',
-                finish_date: Date().toLocaleString({timeZone: "Asia/Jakarta"}),
+                finish_date: Date().toLocaleString({ timeZone: "Asia/Jakarta" }),
             },
             {
                 where: {
@@ -125,3 +125,43 @@ exports.finish = async (req, res) => {
         }
     }
 };
+
+
+exports.record = async (req, res) => {
+    try {
+        const shippingCode = req.params.code;
+        const shipping = await Shipping.findOne({
+            where: {
+                code: shippingCode
+            }
+        });
+
+        if (!shipping) {
+            return res.status(404).send({
+                message: "Shipping code not found ngap!"
+            });
+        }
+
+        await Shipping_Detail.create({
+            shipping_id: shipping.id,
+            place_name: req.body.place_name,
+            coordinate: req.body.coordinate,
+            detail: req.body.detail
+        });
+
+        res.status(200).send({
+            message: "Tracking has been successfully recorded."
+        });
+    } catch (err) {
+        console.error(err.message);
+        if (err.message.includes("invalid input syntax")) {
+            res.status(400).send({
+                message: "Invalid input syntax. Please check your request data."
+            });
+        } else {
+            res.status(500).send({
+                message: "Failed to change status. Please check application log."
+            });
+        }
+    }
+}
