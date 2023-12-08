@@ -45,7 +45,7 @@ const isUser = (req, res, next) => {
     });
 };
 
-const isSupir = (req, res, next) => {
+const isDriver = (req, res, next) => {
     User.findByPk(req.userId).then((user) => {
         if (!user) return res.status(404).send({ message: "User not found." });
         if (user.role === "supir") {
@@ -53,7 +53,7 @@ const isSupir = (req, res, next) => {
             return;
         }
         res.status(403).send({
-            message: "Require supir role!",
+            message: "Require driver role!",
         });
     });
 };
@@ -86,7 +86,7 @@ const isNotUser = (req, res, next) => {
 
 const authJwt = {
     verifyToken: verifyToken,
-    isSupir: isSupir,
+    isDriver: isDriver,
     isUser: isUser,
     isOrganisasi: isOrganisasi,
     isNotUser: isNotUser,
