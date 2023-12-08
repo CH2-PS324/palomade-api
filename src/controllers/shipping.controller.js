@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
             finish_date: req.body.finish_date,
             status: null,
             driver_id: null,
-            organisasi_id: req.body.organisasi_id,
+            organisasi_id: req.userId,
             plat: null,
             bobot: null,
             from: req.body.from,
@@ -165,3 +165,42 @@ exports.record = async (req, res) => {
         }
     }
 }
+
+exports.getShipping = async (req, res) => {
+    try{
+        const shippingId = req.params.id;
+        const shippingDetail = await Shipping_Detail.findAll({
+            where: {
+                shipping_id: shippingId
+            }
+        });
+
+        if (!shippingDetail || shippingDetail.length === 0) {
+            return res.status(404).send({
+                message: "Shipping not found or no update from driver yet"
+            });
+        }
+
+        const data = shippingDetail.map(shippingDetail => ({
+            lokasi: shippingDetail.place_name,
+            detail: shippingDetail.detail,
+            waktu: shippingDetail.createdAt
+        }));
+
+        res.status(200).send({
+            message: "Shipping was fetched succesfully",
+            data: data
+        })
+    } catch (err) {
+        console.error(err.message);
+        if (err.message.includes("invalid input syntax")) {
+            res.status(404).send({
+                message: "User not found. Invalid ID.",
+            });
+        } else {
+            res.status(500).send({
+                message: "Failed to fetch shipping. Please check application log.",
+            });
+        }
+    }
+};

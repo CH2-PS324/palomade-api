@@ -20,5 +20,8 @@ module.exports = function (app) {
     app.patch("/api/shipping/finish/:code", [authJwt.verifyToken, authJwt.isOrganisasi], controller.finish);
 
     // Add Shipping Detail (Supir) 
-    app.post("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isDriver], controller.record)
+    app.post("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isDriver], controller.record);
+    
+    // Get Detail Shipping (Organisasi)
+    app.get("/api/shipping/record/:id", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getShipping);
 };
