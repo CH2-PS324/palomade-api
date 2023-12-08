@@ -36,28 +36,6 @@ exports.create = async (req, res) => {
     }
 };
 
-// exports.start = async (req, res) => {
-//     Shipping.findOne({
-//         where: {
-//             code: req.body.code
-//         },
-//     }).then((shipping) => {
-//         Shipping.update(
-//             {
-//                 ...req.body
-//             },
-//             {
-//                 where: {id : 1} // ini idnya harus di fetch dari jwt si, soalnya gaada masukan dari input yekan. tapi dari req.body juga bisa aja sih sebenernya.
-//             }
-//         ).then((shippingData) => {
-
-//         })
-//         .catch((err) => {
-
-//         })
-//     })
-// }
-
 exports.start = async (req, res) => {
     try {
         const shippingCode = req.params.code;
