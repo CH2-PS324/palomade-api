@@ -14,7 +14,8 @@ const catchError = (err, res) => {
 };
 
 const verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
+    let token = req.headers["authorization"];
+    token = token && token.split(' ')[1]
 
     if (!token) {
         return res.status(403).send({
@@ -44,7 +45,7 @@ const isUser = (req, res, next) => {
     });
 };
 
-const isSupir = (req, res, next) => {
+const isDriver = (req, res, next) => {
     User.findByPk(req.userId).then((user) => {
         if (!user) return res.status(404).send({ message: "User not found." });
         if (user.role === "supir") {
@@ -52,7 +53,7 @@ const isSupir = (req, res, next) => {
             return;
         }
         res.status(403).send({
-            message: "Require supir role!",
+            message: "Require driver role!",
         });
     });
 };
@@ -83,11 +84,25 @@ const isNotUser = (req, res, next) => {
     });
 };
 
+const isOrgOrDriver = (req, res, next) => {
+    User.findByPk(req.userId).then((user) => {
+        if (!user) return res.status(404).send({ message: "User not found." });
+        if (['organisasi', 'supir'].includes(user.role)) {
+            next();
+            return;
+        }
+        res.status(403).send({
+            message: "Require organisasi or driver role!",
+        });
+    });
+};
+
 const authJwt = {
     verifyToken: verifyToken,
-    isSupir: isSupir,
+    isDriver: isDriver,
     isUser: isUser,
     isOrganisasi: isOrganisasi,
+    isOrgOrDriver: isOrgOrDriver,
     isNotUser: isNotUser,
 };
 module.exports = authJwt;

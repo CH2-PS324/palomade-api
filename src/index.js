@@ -22,6 +22,9 @@ app.get("/", (req, res) => {
 // users route
 require("./routes/user.route.js")(app);
 
+// shipping route
+require("./routes/shipping.route.js")(app);
+
 // starting server
 const startServer = async () => {
     try {
