@@ -84,11 +84,25 @@ const isNotUser = (req, res, next) => {
     });
 };
 
+const isOrgOrDriver = (req, res, next) => {
+    User.findByPk(req.userId).then((user) => {
+        if (!user) return res.status(404).send({ message: "User not found." });
+        if (['organisasi', 'supir'].includes(user.role)) {
+            next();
+            return;
+        }
+        res.status(403).send({
+            message: "Require organisasi or driver role!",
+        });
+    });
+};
+
 const authJwt = {
     verifyToken: verifyToken,
     isDriver: isDriver,
     isUser: isUser,
     isOrganisasi: isOrganisasi,
+    isOrgOrDriver: isOrgOrDriver,
     isNotUser: isNotUser,
 };
 module.exports = authJwt;

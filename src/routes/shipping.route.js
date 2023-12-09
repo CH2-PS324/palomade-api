@@ -23,7 +23,7 @@ module.exports = function (app) {
     app.post("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isDriver], controller.record);
     
     // Get Detail Shipping (Organisasi)
-    app.get("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getShipping);
+    app.get("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isOrgOrDriver], controller.getShipping);
 
     // Get All Shipping (Organisasi)
     app.get("/api/shipping/org/:id", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getAllshippingOrg);
