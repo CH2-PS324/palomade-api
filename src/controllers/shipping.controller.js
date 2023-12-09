@@ -2,6 +2,8 @@ const { db } = require('../models');
 const { sequelize, shipping: Shipping, shipping_detail: Shipping_Detail, user: User} = db;
 const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
+const Hashids = require('hashids/cjs');
+const hashids = new Hashids(process.env.HASH_KEY, 16)
 
 exports.create = async (req, res) => {
     try {
@@ -143,7 +145,7 @@ exports.record = async (req, res) => {
         }
 
         await Shipping_Detail.create({
-            shipping_id: shipping.id,
+            shipping_id: hashids.decode(shipping.id),
             place_name: req.body.place_name,
             coordinate: req.body.coordinate,
             detail: req.body.detail
@@ -168,7 +170,7 @@ exports.record = async (req, res) => {
 
 exports.getShipping = async (req, res) => {
     try{
-        const shippingId = req.params.id;
+        const shippingId = req.params.code;
         const shippingDetail = await Shipping.findOne({
             include: [{model: Shipping_Detail, required: false}],
             where: {
@@ -209,7 +211,7 @@ exports.getShipping = async (req, res) => {
 
 exports.getAllshippingOrg = async (req, res) =>{
     try{
-        const orgId = req.params.id
+        const orgId = hashids.decode(req.params.id)
         const shippingByOrg = await User.findOne({
             include: [{model: Shipping, required: false}],
             where: {
@@ -249,7 +251,7 @@ exports.getAllshippingOrg = async (req, res) =>{
 
 exports.getAllshippingDriver = async (req, res) =>{
     try{
-        const driverId= req.params.id
+        const driverId= hashids.decode(req.params.id)
         const query = `
             SELECT
                 users.id,
@@ -285,8 +287,6 @@ exports.getAllshippingDriver = async (req, res) =>{
                 message: "This driver don't have shipping yet"
             });
         }
-
-        // console.log(shippingByDriver)
 
         const data = shippingByDriver.map(shipping => {
             return {
