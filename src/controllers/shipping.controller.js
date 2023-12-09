@@ -1,5 +1,5 @@
 const { db } = require('../models');
-const { shipping: Shipping, shipping_detail: Shipping_Detail } = db;
+const { sequelize, shipping: Shipping, shipping_detail: Shipping_Detail, user: User} = db;
 const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
 
@@ -169,9 +169,10 @@ exports.record = async (req, res) => {
 exports.getShipping = async (req, res) => {
     try{
         const shippingId = req.params.id;
-        const shippingDetail = await Shipping_Detail.findAll({
+        const shippingDetail = await Shipping.findOne({
+            include: [{model: Shipping_Detail, required: false}],
             where: {
-                shipping_id: shippingId
+                id: shippingId
             }
         });
 
@@ -181,21 +182,22 @@ exports.getShipping = async (req, res) => {
             });
         }
 
-        const data = shippingDetail.map(shippingDetail => ({
-            lokasi: shippingDetail.place_name,
-            detail: shippingDetail.detail,
-            waktu: shippingDetail.createdAt
-        }));
+        const data = {
+            code: shippingDetail.code,
+            berat: shippingDetail.bobot,
+            plat: shippingDetail.plat,
+            detail: shippingDetail.shipping_details
+        }
 
         res.status(200).send({
             message: "Shipping was fetched succesfully",
-            data: data
+            data : data
         })
     } catch (err) {
         console.error(err.message);
         if (err.message.includes("invalid input syntax")) {
             res.status(404).send({
-                message: "User not found. Invalid ID.",
+                message: "Shipping not found. Invalid ID.",
             });
         } else {
             res.status(500).send({
@@ -204,3 +206,125 @@ exports.getShipping = async (req, res) => {
         }
     }
 };
+
+exports.getAllshippingOrg = async (req, res) =>{
+    try{
+        const orgId = req.params.id
+        const shippingByOrg = await User.findOne({
+            include: [{model: Shipping, required: false}],
+            where: {
+                id: orgId,
+                role: 'organisasi'
+            }
+        });
+
+        if(!shippingByOrg || shippingByOrg.length === 0){
+            return res.status(404).send({
+                message: "This organization don't have shipping yet"
+            });
+        }
+
+        const data = {
+            nama: shippingByOrg.name,
+            shipping: shippingByOrg.shippings
+        }
+
+        res.status(200).send({
+            message: "Shipping was fetched succesfully",
+            data : data
+        })
+    } catch (err) {
+        console.error(err.message);
+        if (err.message.includes("invalid input syntax")) {
+            res.status(404).send({
+                message: "Shipping not found. Invalid ID.",
+            });
+        } else {
+            res.status(500).send({
+                message: "Failed to fetch shipping. Please check application log.",
+            });
+        }
+    }
+}
+
+exports.getAllshippingDriver = async (req, res) =>{
+    try{
+        const driverId= req.params.id
+        const query = `
+            SELECT
+                users.id,
+                users.name,
+                shippings.id AS 'shipping_id',
+                shippings.code AS 'code',
+                shippings.started_date AS 'started_date',
+                shippings.finish_date AS 'finish_date',
+                shippings.status AS 'status',
+                shippings.plat AS 'plat',
+                shippings.bobot AS 'bobot',
+                shippings.from AS 'from',
+                shippings.to AS 'to',
+                shippings.coordinate_from AS 'coordinate_from',
+                shippings.coordinate_to AS 'coordinate_to',
+                shippings.estimated_arrive AS 'estimated_arrive',
+                shippings.createdAt AS 'createdAt'
+            FROM
+                users
+            LEFT OUTER JOIN
+                shippings ON users.id = shippings.driver_id
+            WHERE
+                users.id = :driverId AND users.role = 'supir';
+        `;
+
+        const shippingByDriver = await sequelize.query(query, {
+            replacements: { driverId: driverId },
+            type: sequelize.QueryTypes.SELECT
+        });
+
+        if(!shippingByDriver || shippingByDriver.length === 0){
+            return res.status(404).send({
+                message: "This driver don't have shipping yet"
+            });
+        }
+
+        // console.log(shippingByDriver)
+
+        const data = shippingByDriver.map(shipping => {
+            return {
+                shipping_id: shipping.shipping_id,
+                code: shipping.code,
+                started_date: shipping.started_date,
+                finish_date: shipping.finish_date,
+                status: shipping.status,
+                plat: shipping.plat,
+                bobot: shipping.bobot,
+                from: shipping.from,
+                to: shipping.to,
+                coordinate_from: shipping.coordinate_from,
+                coordinate_to: shipping.coordinate_to,
+                estimated_arrive: shipping.estimated_arrive,
+                createdAt: shipping.createdAt
+            }
+        })
+
+        const newData = {
+            nama: shippingByDriver[0].name,
+            shippings: data
+        }
+
+        res.status(200).send({
+            message: "Shipping was fetched succesfully",
+            data : newData
+        })
+    } catch (err) {
+        console.error(err.message);
+        if (err.message.includes("invalid input syntax")) {
+            res.status(404).send({
+                message: "Shipping not found. Invalid ID.",
+            });
+        } else {
+            res.status(500).send({
+                message: "Failed to fetch shipping. Please check application log.",
+            });
+        }
+    }
+}

@@ -24,4 +24,10 @@ module.exports = function (app) {
     
     // Get Detail Shipping (Organisasi)
     app.get("/api/shipping/record/:id", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getShipping);
+
+    // Get All Shipping (Organisasi)
+    app.get("/api/shipping/org/:id", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getAllshippingOrg);
+
+    // Get All Shipping (Driver)
+    app.get("/api/shipping/driver/:id", [authJwt.verifyToken, authJwt.isDriver], controller.getAllshippingDriver);
 };
