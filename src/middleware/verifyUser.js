@@ -1,5 +1,7 @@
 const { db } = require("../models");
 const User = db.user;
+const Hashids = require('hashids/cjs');
+const hashids = new Hashids(process.env.HASH_KEY, 16)
 
 const checkDuplicateEmail = (req, res, next) => {
     if (!req.body.email) return next();
@@ -13,6 +15,22 @@ const checkDuplicateEmail = (req, res, next) => {
                 message: "Failed! Email is already taken!",
             });
             return;
+        }
+        next();
+    });
+};
+
+const checkDriverId = (req, res, next) => {
+    if (!req.body.driver_id) return next();
+    User.findOne({
+        where: {
+            id: req.body.driver_id,
+        },
+    }).then((user) => {
+        if (!user) {
+            return res.status(400).send({
+                message: "Failed! Driver ID Not Found ngap!",
+            });
         }
         next();
     });
@@ -34,6 +52,7 @@ const checkRolesExisted = (req, res, next) => {
 const verifyUser = {
     checkDuplicateEmail: checkDuplicateEmail,
     checkRolesExisted: checkRolesExisted,
+    checkDriverId: checkDriverId,
 };
 
 module.exports = verifyUser;
