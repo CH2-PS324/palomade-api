@@ -145,7 +145,7 @@ exports.record = async (req, res) => {
         }
 
         await Shipping_Detail.create({
-            shipping_id: hashids.decode(shipping.id),
+            shipping_id: shipping.id,
             place_name: req.body.place_name,
             coordinate: req.body.coordinate,
             detail: req.body.detail
@@ -170,11 +170,11 @@ exports.record = async (req, res) => {
 
 exports.getShipping = async (req, res) => {
     try{
-        const shippingId = req.params.code;
+        const shippingCode = req.params.code;
         const shippingDetail = await Shipping.findOne({
             include: [{model: Shipping_Detail, required: false}],
             where: {
-                id: shippingId
+                code: shippingCode
             }
         });
 
