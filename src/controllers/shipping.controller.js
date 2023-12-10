@@ -2,8 +2,6 @@ const { db } = require('../models');
 const { sequelize, shipping: Shipping, shipping_detail: Shipping_Detail, user: User} = db;
 const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
-const Hashids = require('hashids/cjs');
-const hashids = new Hashids(process.env.HASH_KEY, 16)
 
 exports.create = async (req, res) => {
     try {
@@ -18,7 +16,7 @@ exports.create = async (req, res) => {
             driver_id: null,
             organisasi_id: req.userId,
             plat: null,
-            bobot: null,
+            bobot: req.body.bobot,
             from: req.body.from,
             to: req.body.to,
             coordinate_from: req.body.coordinate_from,
@@ -211,7 +209,7 @@ exports.getShipping = async (req, res) => {
 
 exports.getAllshippingOrg = async (req, res) =>{
     try{
-        const orgId = hashids.decode(req.params.id)
+        const orgId = req.userId;
         const shippingByOrg = await User.findOne({
             include: [{model: Shipping, required: false}],
             where: {
@@ -251,7 +249,7 @@ exports.getAllshippingOrg = async (req, res) =>{
 
 exports.getAllshippingDriver = async (req, res) =>{
     try{
-        const driverId= hashids.decode(req.params.id)
+        const driverId= req.userId;
         const query = `
             SELECT
                 users.id,
