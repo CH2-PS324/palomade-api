@@ -1,37 +1,47 @@
 const { db } = require('../models');
+const { plus30day } = require('../utils/helper.utils');
 const { user: User, subscription: Subscription, subscription_detail: Subscription_detail } = db;
 
 exports.reedem = async (req, res) => {
     try {
 
+        // Get latest record
         const isUserSubscribed = await Subscription_detail.findOne({
             where: {
                 id_user: req.userId
-            }
-        });
+            },
+            order: [
+                ['id', 'DESC']
+            ]
+        })
 
-        if (isUserSubscribed) {
+        // Check if User is Exist and have active subscription time
+        if (isUserSubscribed && new Date(isUserSubscribed.subsExpiredAt) > new Date()) {
             return res.status(400).send({
                 message: "you have active subscription at this time!"
             })
         }
 
+        // Check if subscription code is not found or has maximum reedem or has expired or is non-active code
         Subscription.findOne({
             where: {
                 code: req.body.code
             }
         }).then((subscription) => {
-            if (!subscription || subscription.quota < 1) {
+            if (!subscription || subscription.quota < 1 || (subscription.is_active == false) || new Date(subscription.expiredAt) < new Date()) {
                 return res.status(404).send({
-                    message: "subscription code not found or already used"
+                    message: "subscription code not found, already have maximum reedem, or already expired"
                 })
             }
 
+            // creating subscription detail record
             Subscription_detail.create({
                 id_subscription: subscription.id,
                 id_user: req.userId,
+                subsExpiredAt: plus30day(30)
             })
 
+            // change attribute is_subscribe in user
             User.update({
                 is_subscribe: true,
             }, {
@@ -40,6 +50,7 @@ exports.reedem = async (req, res) => {
                 }
             })
 
+            // change count of quota - 1
             Subscription.update({
                 quota: subscription.quota - 1
             }, {
