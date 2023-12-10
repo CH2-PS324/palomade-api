@@ -77,3 +77,28 @@ exports.reedem = async (req, res) => {
         }
     }
 }
+
+exports.check = async (req, res) => {
+    // Get latest record
+    const isUserSubscribed = await Subscription_detail.findOne({
+        where: {
+            id_user: req.userId
+        },
+        order: [
+            ['id', 'DESC']
+        ]
+    })
+
+    // Check if User is Exist and have active subscription time
+    if (isUserSubscribed && new Date(isUserSubscribed.subsExpiredAt) > new Date()) {
+        return res.status(200).send({
+            status: true,
+            message: "you have active subscription at this time!",
+        })
+    }
+
+    return res.status(404).send({
+        status: false,
+        message: "you not have active subscription now!",
+    })
+}
