@@ -1,12 +1,12 @@
 # specify the node base image with your desired version node:<version>
-FROM alpine:3.19
-
-ENV NODE_VERSION 18.17.1
-
+FROM node:18-bullseye-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+
+ENV HOST 0.0.0.0
+ENV PORT 8080
 
 # Database Config
 ENV DB_DATABASE=palomade_api
