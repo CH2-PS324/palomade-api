@@ -1,5 +1,8 @@
 # specify the node base image with your desired version node:<version>
-FROM node:18-bullseye-slim
+FROM alpine:3.19
+
+ENV NODE_VERSION 18.17.1
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
