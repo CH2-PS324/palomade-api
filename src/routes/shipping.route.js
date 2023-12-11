@@ -26,8 +26,8 @@ module.exports = function (app) {
     app.get("/api/shipping/record/:code", [authJwt.verifyToken, authJwt.isOrgOrDriver], controller.getShipping);
 
     // Get All Shipping (Organisasi)
-    app.get("/api/shipping/org/:id", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getAllshippingOrg);
+    app.get("/api/shipping/org/", [authJwt.verifyToken, authJwt.isOrganisasi], controller.getAllshippingOrg);
 
     // Get All Shipping (Driver)
-    app.get("/api/shipping/driver/:id", [authJwt.verifyToken, authJwt.isDriver], controller.getAllshippingDriver);
+    app.get("/api/shipping/driver/", [authJwt.verifyToken, authJwt.isDriver], controller.getAllshippingDriver);
 };

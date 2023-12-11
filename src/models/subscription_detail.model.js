@@ -17,6 +17,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             allowNull: false,
             defaultValue: Sequelize.fn("NOW"),
+        },
+        subsExpiredAt: {
+            type: Sequelize.DATE,
+            allowNull: false,
         }
     }, {
         timestamps: false

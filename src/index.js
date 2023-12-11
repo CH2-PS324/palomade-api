@@ -25,6 +25,12 @@ require("./routes/user.route.js")(app);
 // shipping route
 require("./routes/shipping.route.js")(app);
 
+// subscription route
+require("./routes/subscription.route.js")(app);
+
+// config route
+require("./routes/config.route.js")(app);
+
 // starting server
 const startServer = async () => {
     try {
