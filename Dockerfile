@@ -1,11 +1,15 @@
 # specify the node base image with your desired version node:<version>
 FROM node:lts
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
 
+ENV PORT=8080
 ENV HOST=0.0.0.0
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
 
 # Database Config
 ENV DB_DATABASE=palomade_api
