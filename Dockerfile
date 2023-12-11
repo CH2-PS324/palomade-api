@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Make port 3000 available to the world outside this container
-EXPOSE 8080
+EXPOSE 9000
 
 # Define environment variable
 ENV NODE_ENV=production
