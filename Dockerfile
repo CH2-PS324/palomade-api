@@ -1,12 +1,11 @@
 # specify the node base image with your desired version node:<version>
-FROM node:18-bullseye-slim
+FROM node:lts
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 
-ENV HOST 0.0.0.0
-ENV PORT 8080
+ENV HOST=0.0.0.0
 
 # Database Config
 ENV DB_DATABASE=palomade_api
