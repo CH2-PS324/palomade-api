@@ -1,3 +1,4 @@
 node_modules
 .env
-Dockerfile-backup
+Dockerfile.example
+cloudbuild.example.yaml
