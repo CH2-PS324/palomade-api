@@ -6,6 +6,10 @@ const sequelize = new Sequelize(
     dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
+    dialectOptions: {
+        useUTC: false, //for reading from database
+    },
+    timezone: '+07:00', //for writing to database
     operatorAlias: false,
     pool: {
         max: dbConfig.pool.max,
