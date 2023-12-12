@@ -27,11 +27,11 @@ module.exports = function (app) {
     app.post("/api/users/refreshtoken", controller.refreshToken);
 
     // Get User Detail
-    app.get("/api/users/:id", [authJwt.verifyToken], controller.getOne);
+    app.get("/api/users/", [authJwt.verifyToken], controller.getOne);
 
     // Update User
     app.patch(
-        "/api/users/:id",
+        "/api/users/",
         [
             authJwt.verifyToken,
             verifyUser.checkDuplicateEmail,
