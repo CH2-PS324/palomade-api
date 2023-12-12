@@ -34,5 +34,7 @@ ENV MAIL_SECURE=true
 ENV MAIL_USER=palomade@hafizcaniago.my.id
 ENV MAIL_PASSWORD=palomade123
 
+ENV MAPS_KEY='AIzaSyAb_rGNV2Gw6ynOwkwcMsjltyp9voTs2Io'
+
 # Run the application
 CMD ["npm", "start"]
