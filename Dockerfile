@@ -21,22 +21,10 @@ EXPOSE 9000
 ENV NODE_ENV=production
 
 # DB Connection
-ENV DB_DATABASE=palomade-api
-ENV DB_HOST=34.121.56.178
-ENV DB_USER=root
-ENV DB_PASSWORD=root1234
 
 ENV PORT=2002
-ENV SECRET_KEY=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMTQzMDU0OCwiaWF0IjoxNzAxNDMwNTQ4fQ.EDKkPCL9VWXHGBwIOaefJsBGyPnpPeQkda8Ff2Ijru8
 
-# HashIds
-ENV HASH_KEY=polamade
-
-ENV MAIL_HOST="mail.hafizcaniago.my.id"
-ENV MAIL_PORT=465
 ENV MAIL_SECURE=true
-ENV MAIL_USER=palomade@hafizcaniago.my.id
-ENV MAIL_PASSWORD=palomade123
 
 # Run the application
 CMD ["npm", "start"]
