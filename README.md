@@ -184,8 +184,8 @@ List and describe the available endpoints of your API. Provide details such as t
 
 ### 4. Update User
 
-- **Method:** `POST`
-- **Path:** `/api/users/login`
+- **Method:** `PATCH`
+- **Path:** `/api/users/`
 - **Authorization:** Bearer token from login
 - **Request Body:**
   ```json
