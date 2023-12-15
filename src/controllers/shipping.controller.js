@@ -1,16 +1,33 @@
 const { db } = require('../models');
-const { sequelize, shipping: Shipping, shipping_detail: Shipping_Detail, user: User} = db;
+const { sequelize, shipping: Shipping, shipping_detail: Shipping_Detail, user: User } = db;
 const { v4: uuidv4 } = require('uuid');
+const { plusMinutes } = require('../utils/helper.utils');
+const axios = require('axios');
 require("dotenv").config();
 
 exports.create = async (req, res) => {
     try {
         const fullUuid = uuidv4();
         const shortUuid = fullUuid.substring(0, 8);
+        
+        const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+            params: {
+                origins: req.body.coordinate_from, // Replace with your origin address or coordinates
+                destinations: req.body.coordinate_to, // Replace with your destination address or coordinates
+                key: process.env.MAPS_KEY, // Replace with your Google Maps API key
+            },
+        });
+
+        // Process the response and send the relevant information back to the client
+        const duration = response.data.rows[0].elements[0].duration.value;
+        const minuteduration = Math.floor(duration / 60);
+        console.log(minuteduration);
+
+        const shippingCode = shortUuid.toUpperCase()
 
         await Shipping.create({
-            code: shortUuid.toUpperCase(),
-            started_date: req.body.started_date,
+            code: shippingCode,
+            started_date: Date().toLocaleString({ timeZone: "Asia/Jakarta" }),
             finish_date: req.body.finish_date,
             status: null,
             driver_id: null,
@@ -21,11 +38,12 @@ exports.create = async (req, res) => {
             to: req.body.to,
             coordinate_from: req.body.coordinate_from,
             coordinate_to: req.body.coordinate_to,
-            estimated_arrive: req.body.estimated_arrive,
+            estimated_arrive: plusMinutes(minuteduration + 840),
         });
 
         res.status(201).send({
             message: "Shipping was added successfully!",
+            code: shippingCode,
             data: req.body
         });
     } catch (err) {
@@ -167,10 +185,10 @@ exports.record = async (req, res) => {
 }
 
 exports.getShipping = async (req, res) => {
-    try{
+    try {
         const shippingCode = req.params.code;
         const shippingDetail = await Shipping.findOne({
-            include: [{model: Shipping_Detail, required: false}],
+            include: [{ model: Shipping_Detail, required: false }],
             where: {
                 code: shippingCode
             }
@@ -191,7 +209,7 @@ exports.getShipping = async (req, res) => {
 
         res.status(200).send({
             message: "Shipping was fetched succesfully",
-            data : data
+            data: data
         })
     } catch (err) {
         console.error(err.message);
@@ -207,18 +225,18 @@ exports.getShipping = async (req, res) => {
     }
 };
 
-exports.getAllshippingOrg = async (req, res) =>{
-    try{
+exports.getAllshippingOrg = async (req, res) => {
+    try {
         const orgId = req.userId;
         const shippingByOrg = await User.findOne({
-            include: [{model: Shipping, required: false}],
+            include: [{ model: Shipping, required: false }],
             where: {
                 id: orgId,
                 role: 'organisasi'
             }
         });
 
-        if(!shippingByOrg || shippingByOrg.length === 0){
+        if (!shippingByOrg || shippingByOrg.length === 0) {
             return res.status(404).send({
                 message: "This organization don't have shipping yet"
             });
@@ -231,7 +249,7 @@ exports.getAllshippingOrg = async (req, res) =>{
 
         res.status(200).send({
             message: "Shipping was fetched succesfully",
-            data : data
+            data: data
         })
     } catch (err) {
         console.error(err.message);
@@ -247,9 +265,9 @@ exports.getAllshippingOrg = async (req, res) =>{
     }
 }
 
-exports.getAllshippingDriver = async (req, res) =>{
-    try{
-        const driverId= req.userId;
+exports.getAllshippingDriver = async (req, res) => {
+    try {
+        const driverId = req.userId;
         const query = `
             SELECT
                 users.id,
@@ -280,7 +298,7 @@ exports.getAllshippingDriver = async (req, res) =>{
             type: sequelize.QueryTypes.SELECT
         });
 
-        if(!shippingByDriver || shippingByDriver.length === 0){
+        if (!shippingByDriver || shippingByDriver.length === 0) {
             return res.status(404).send({
                 message: "This driver don't have shipping yet"
             });
@@ -311,7 +329,7 @@ exports.getAllshippingDriver = async (req, res) =>{
 
         res.status(200).send({
             message: "Shipping was fetched succesfully",
-            data : newData
+            data: newData
         })
     } catch (err) {
         console.error(err.message);

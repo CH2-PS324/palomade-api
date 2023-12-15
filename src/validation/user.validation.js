@@ -14,9 +14,6 @@ const registerValidator = [
         .withMessage('Password harus terdiri minimal 8 karakter!')
         .notEmpty()
         .withMessage('Password tidak boleh kosong!'),
-    body('role')
-        .notEmpty()
-        .withMessage('Role tidak boleh kosong!')
 ];
 
 const runValidaton = (req, res, next) => {
