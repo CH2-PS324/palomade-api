@@ -1,6 +1,7 @@
 const { authJwt, verifyUser } = require("../middleware");
 const controller = require("../controllers/subscription.controller");
-const { registerValidator, runValidaton } = require('../validation/user.validation');
+const { redeemValidator, runValidaton } = require('../validation/redeem.validation');
+const { run } = require("node:test");
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -11,7 +12,7 @@ module.exports = function (app) {
         next();
     });
 
-    app.post('/api/reedem-subscription', [authJwt.verifyToken, authJwt.isUser], controller.reedem);
+    app.post('/api/reedem-subscription', redeemValidator, runValidaton, [authJwt.verifyToken, authJwt.isUser], controller.reedem);
 
-    app.get('/api/check-subscription', [authJwt.verifyToken, authJwt.isUser], controller.check)
+    app.get('/api/check-subscription', redeemValidator, runValidaton, [authJwt.verifyToken, authJwt.isUser], controller.check)
 };

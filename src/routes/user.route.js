@@ -1,6 +1,7 @@
 const { authJwt, verifyUser } = require("../middleware");
 const controller = require("../controllers/user.controller");
 const { registerValidator, runValidaton } = require('../validation/user.validation');
+const { loginValidator } = require('../validation/login.validation');
 
 
 module.exports = function (app) {
@@ -16,22 +17,25 @@ module.exports = function (app) {
     app.post(
         "/api/users/register",
         registerValidator, runValidaton,
-        [verifyUser.checkDuplicateEmail],
+        [
+            verifyUser.checkDuplicateEmail, 
+            verifyUser.checkRolesExisted
+        ],
         controller.create
     );
 
     // Login User
-    app.post("/api/users/login", controller.login);
+    app.post("/api/users/login", loginValidator, runValidaton, controller.login);
 
     // Refresh Token
     app.post("/api/users/refreshtoken", controller.refreshToken);
 
     // Get User Detail
-    app.get("/api/users/:id", [authJwt.verifyToken], controller.getOne);
+    app.get("/api/users/", [authJwt.verifyToken], controller.getOne);
 
     // Update User
     app.patch(
-        "/api/users/:id",
+        "/api/users/",
         [
             authJwt.verifyToken,
             verifyUser.checkDuplicateEmail,

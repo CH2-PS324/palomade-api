@@ -23,9 +23,11 @@ exports.create = async (req, res) => {
         const minuteduration = Math.floor(duration / 60);
         console.log(minuteduration);
 
+        const shippingCode = shortUuid.toUpperCase()
+
         await Shipping.create({
-            code: shortUuid.toUpperCase(),
-            started_date: req.body.started_date,
+            code: shippingCode,
+            started_date: Date().toLocaleString({ timeZone: "Asia/Jakarta" }),
             finish_date: req.body.finish_date,
             status: null,
             driver_id: null,
@@ -41,6 +43,7 @@ exports.create = async (req, res) => {
 
         res.status(201).send({
             message: "Shipping was added successfully!",
+            code: shippingCode,
             data: req.body
         });
     } catch (err) {

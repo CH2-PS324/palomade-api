@@ -20,21 +20,12 @@ EXPOSE 9000
 # Define environment variable
 ENV NODE_ENV=production
 
-# Database Config
+# DB Connection
 ENV DB_DATABASE=palomade
-ENV DB_HOST=35.232.35.32
-ENV DB_USER=root
-ENV DB_PASSWORD=palomade123
-ENV PORT=9000
-ENV SECRET_KEY=eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMTQzMDU0OCwiaWF0IjoxNzAxNDMwNTQ4fQ.EDKkPCL9VWXHGBwIOaefJsBGyPnpPeQkda8Ff2Ijru8
 
-ENV MAIL_HOST="mail.hafizcaniago.my.id"
-ENV MAIL_PORT=465
+ENV PORT=2002
+
 ENV MAIL_SECURE=true
-ENV MAIL_USER=palomade@hafizcaniago.my.id
-ENV MAIL_PASSWORD=palomade123
-
-ENV MAPS_KEY='AIzaSyAb_rGNV2Gw6ynOwkwcMsjltyp9voTs2Io'
 
 # Run the application
 CMD ["npm", "start"]

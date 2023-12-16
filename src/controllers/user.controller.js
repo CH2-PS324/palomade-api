@@ -11,24 +11,25 @@ const { kirimEmail } = require('../utils/mailsender.utils');
 require("dotenv").config();
 
 
-exports.login = (req, res) => {
-    User.findOne({
-        where: {
-            email: req.body.email,
-        },
-    }).then(async (user) => {
-        // Check User Registered or Not
+exports.login = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                email: req.body.email,
+            }
+        });
+        
         if (!user) {
             return res.status(404).send({
                 message: "Account Used By Your Email is not Registered, Please Check the Email again!",
             })
         }
 
-        // Compare Password
         let passwordIsValid = bcrypt.compareSync(
             req.body.password,
             user.password
         )
+
         if (!passwordIsValid) {
             return res.status(401).send({
                 message: "Invalid password.",
@@ -48,12 +49,13 @@ exports.login = (req, res) => {
             accessToken: token,
             refreshToken: refreshToken,
         });
-    }).catch((err) => {
-        console.error(err.message);
-        res.status(500).send({
-            message: "Failed to login. Please check application log.",
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({
+            message: "Failed to generate access token. Please check application log.",
         });
-    });
+    }
 }
 
 exports.refreshToken = async (req, res) => {
@@ -106,98 +108,117 @@ exports.refreshToken = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8),
-        role: req.body.role || 'user',
-    })
-        .then(async (user) => {
-            res.status(201).send({
-                message: "User was registered successfully!",
-                data: req.body
-            });
-
-            let message = {
-                from: 'noreply.palomade@hafizcaniago.my.id',
-                to: req.body.email,
-                subject: 'Welcome to Palomade!',
-                html: mailWelcomeTemplate(req.body)
-            }
-
-            await kirimEmail(message);
+    try {
+        await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: bcrypt.hashSync(req.body.password, 8),
+            role: req.body.role || 'user',
         })
-        .catch((err) => {
-            console.error(err.message);
-            res.status(500).send({
-                message: "Failed to register user. Please check application log.",
-            });
-        });
-};
 
-exports.getOne = (req, res) => {
-    User.findOne({
-        where: {
-            id: hashids.decode(req.params.id),
-        },
-    })
-        .then((user) => {
-            if (!user) return res.status(404).send({ message: "User not found." });
-            else {
-                res.status(200).send({
-                    message: "User was fetched successfully.",
-                    data: {
-                        id: hashids.encode(user.id),
-                        name: user.name,
-                        email: user.email,
-                        password: user.password,
-                        role: user.role,
-                    },
-                });
-            }
-        })
-        .catch((err) => {
-            console.error(err.message);
-            if (err.message.includes("invalid input syntax")) {
-                res.status(404).send({
-                    message: "User not found. Invalid ID.",
-                });
-            } else {
-                res.status(500).send({
-                    message: "Failed to fetch user. Please check application log.",
-                });
-            }
-        });
-};
+        let message = {
+            from: 'noreply.palomade@hafizcaniago.my.id',
+            to: req.body.email,
+            subject: 'Welcome to Palomade!',
+            html: mailWelcomeTemplate(req.body)
+        }
 
-exports.update = (req, res) => {
-    if (req.body.password) {
-        req.body.password = bcrypt.hashSync(req.body.password, 8);
+        await kirimEmail(message);
+
+        res.status(201).send({
+            message: "User was registered successfully!",
+            data: req.body
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({
+            message: "Failed to register user. Please check application log.",
+        });
     }
-    User.update(
-        {
-            ...req.body,
-        },
-        { where: { id: hashids.decode(req.params.id) } }
-    )
-        .then((user) => {
-            res.status(200).send({
-                message: "User was updated successfully.",
-            });
-        })
-        .catch((err) => {
-            console.error(err.message);
-            if (err.message.includes("invalid input syntax")) {
-                res.status(404).send({
-                    message: "User not found.",
-                });
-            } else {
-                res.status(500).send({
-                    message: "Failed to update user. Please check application log.",
-                });
-            }
-        });
 };
+
+exports.getOne = async (req, res) => {
+    try { 
+        const user = await User.findOne({
+            where: {
+                id: req.userId,
+            },
+        })
+
+        if (!user) {
+            return res.status(404).send({ 
+                message: "User not found." 
+            }); 
+        }
+
+        res.status(200).send({
+            message: "User was fetched successfully.",
+            data: {
+                id: hashids.encode(user.id),
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                role: user.role,
+            },
+        });
+
+    } catch (err) {
+        console.error(err);
+        if (err.includes("invalid input syntax")) {
+            res.status(404).send({
+                message: "User not found. Invalid ID.",
+            });
+        } else {
+            res.status(500).send({
+                message: "Failed to fetch user. Please check application log.",
+            });
+        }
+    }
+};
+
+exports.update = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const user = await User.findOne({
+            where: {
+                id: userId,
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found.",
+            });
+        }
+
+        if (req.body.password) {
+            req.body.password = bcrypt.hashSync(req.body.password, 8);
+        }
+
+        await User.update(
+            { 
+                ...req.body 
+            },
+            { 
+                where: { 
+                    id: userId 
+                } 
+            }
+        );
+
+        res.status(200).json({
+            message: "User was updated successfully.",
+            data: req.body,
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+            message: "Failed to update user. Please check application log.",
+        });
+    }
+};
+
 
 // exports.sendWelcomeEmail = (req, res) => {
 //     if (!req.body.email) {
