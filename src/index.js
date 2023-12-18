@@ -4,12 +4,14 @@ const cors = require('cors');
 const app = express();
 const { errors } = require('celebrate');
 const { initializeDatabase } = require("./models/");
+const { limiter } = require("./config/limiter.config.js");
 
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(limiter)
 app.use(errors())
 
 app.get("/", (req, res) => {
