@@ -10,7 +10,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'api-model-snapcat'
+      - 'palomade-api'
       - '--image'
       - 'gcr.io/$PROJECT_ID/palomade-api:$COMMIT_SHA'
       - '--region'
