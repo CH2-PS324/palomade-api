@@ -20,4 +20,4 @@ steps:
       - '--allow-unauthenticated'
 images:
   - 'gcr.io/$PROJECT_ID/palomade-api:$COMMIT_SHA'
-logsBucket: 'gs://palomade-test-buckets/logs'
+logsBucket: 'gs://palomade-bjir-buckets/logs'
