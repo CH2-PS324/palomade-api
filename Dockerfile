@@ -21,7 +21,7 @@ EXPOSE 9000
 ENV NODE_ENV=production
 
 # DB Connection
-ENV DB_DATABASE=palomade-api
+ENV DB_DATABASE=palomade
 
 ENV PORT=2002
 
