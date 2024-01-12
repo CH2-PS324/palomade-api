@@ -14,5 +14,5 @@ module.exports = function (app) {
 
     app.post('/api/reedem-subscription', redeemValidator, runValidaton, [authJwt.verifyToken, authJwt.isUser], controller.reedem);
 
-    app.get('/api/check-subscription', redeemValidator, runValidaton, [authJwt.verifyToken, authJwt.isUser], controller.check)
+    app.get('/api/check-subscription', [authJwt.verifyToken, authJwt.isUser], controller.check)
 };
