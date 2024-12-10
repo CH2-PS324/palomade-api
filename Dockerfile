@@ -1,6 +1,6 @@
 # Dockerfile
 # Use an official Node.js runtime as a parent image
-FROM node:18-bullseye-slim
+FROM node:20-bullseye
 
 # Set the working directory to /app
 WORKDIR /app
